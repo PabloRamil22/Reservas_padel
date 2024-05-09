@@ -10,14 +10,22 @@ if (!isset($_SESSION["username"])) {
 // Conexión a la base de datos
 include("conexion.php");
 
+
+
 if(isset($_POST['eliminar_reserva'])) {
     $idreservation = $_POST['idreservation'];
 
+    // Eliminar las filas relacionadas en la tabla `play`
+    $sql_delete_play = "DELETE FROM play WHERE idreservation = :idreservation";
+    $stmt_play = $conn->prepare($sql_delete_play);
+    $stmt_play->bindParam(':idreservation', $idreservation, PDO::PARAM_INT);
+    $stmt_play->execute();
+
     // Eliminar la reserva de la base de datos
     $sql_delete_reservation = "DELETE FROM reservation WHERE idreservation = :idreservation";
-    $stmt = $conn->prepare($sql_delete_reservation);
-    $stmt->bindParam(':idreservation', $idreservation, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt_reservation = $conn->prepare($sql_delete_reservation);
+    $stmt_reservation->bindParam(':idreservation', $idreservation, PDO::PARAM_INT);
+    $stmt_reservation->execute();
 }
 
 // Obtener el ID del usuario actual
