@@ -10,6 +10,16 @@ if (!isset($_SESSION["username"])) {
 // Conexión a la base de datos
 include("conexion.php");
 
+if(isset($_POST['eliminar_reserva'])) {
+    $idreservation = $_POST['idreservation'];
+
+    // Eliminar la reserva de la base de datos
+    $sql_delete_reservation = "DELETE FROM reservation WHERE idreservation = :idreservation";
+    $stmt = $conn->prepare($sql_delete_reservation);
+    $stmt->bindParam(':idreservation', $idreservation, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
 // Obtener el ID del usuario actual
 $username = $_SESSION["username"];
 $iduser = $_SESSION["iduser"];
@@ -93,6 +103,11 @@ $reservations = $query_reservations->fetchAll(PDO::FETCH_ASSOC);
                                 <h5 class="card-title"><?php echo $reservation['name']; ?></h5>
                                 <p class="card-text">Horario: <?php echo $reservation['playdate']; ?></p>
                                 <p class="card-text">Nº jugadores: <?php echo $reservation['jugadores']; ?></p>
+                            
+                            <form action="" method="POST">
+                                <input type="hidden" name="idreservation" value="<?php echo $reservation['idreservation']; ?>">
+                                <button type="submit" name="eliminar_reserva" class="btn btn-danger">Eliminar Reserva</button>
+                            </form>
                             </div>
                         </div>
                     </div>
